@@ -42,6 +42,38 @@ termination = False
 
 start = time.time()
 
+def create_pp_instance(duals, original_path, iteration, scaling=100, output_dir="snapshots"):
+    import os
+    os.makedirs(output_dir, exist_ok=True)
+
+    mu = duals[0]
+
+    with open(original_path) as f:
+        lines = f.readlines()
+
+    edges = []
+    in_edge = False
+    e_start = e_end = None
+    for idx, line in enumerate(lines):
+        if line.strip() == "EDGE_COST":
+            in_edge = True; e_start = idx; continue
+        if in_edge:
+            if line.strip() == "END":
+                e_end = idx; in_edge = False; continue
+            p = line.split()
+            edges.append((int(p[0]), int(p[1]), float(p[2])))
+
+    new_edges = []
+    for (i, j, t_ij) in edges:
+        p_ij = t_ij - scaling * mu[j]    # VERIFICA: mu[j] o mu[i]
+        new_edges.append(f"{i} {j} {int(round(p_ij))}\n")
+
+    out = lines[:e_start+1] + new_edges + lines[e_end:]
+    path = os.path.join(output_dir, f"snapshot_iter_{iteration}.txt")
+    with open(path, "w") as f:
+        f.writelines(out)
+    return path
+
 print("Optimizing...\n")
 while(not termination):
     #RMP solve and obtain new duals
@@ -58,6 +90,7 @@ while(not termination):
     bestRC, costs, columns = pricers.collectColumns()
     if iteration % 50 == 0:
         printIterationInfo(master, pricers, iteration, duals, bestRC, costs, columns, start)
+        create_pp_instance(duals, data_path, iteration)
     if bestRC < threshold:
         for i in range(len(columns)):
             master.addColumn(costs[i], columns[i])

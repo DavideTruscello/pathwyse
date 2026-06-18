@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
+
 from bin.wrapper import PWSolver
 
 class SPPRCLIB:
@@ -16,7 +20,6 @@ class SPPRCLIB:
     def updatePricers(self, duals):
         mu = [-self.scaling*m for m in duals[0]]
         self.pathwyse.setNodeCost(mu)
-
         gamma = -self.scaling*duals[1]
         self.pathwyse.setInitCost(gamma)
         self.pathwyse.resetEnsemble(self.reset_level) if self.ensemble_used else self.pathwyse.resetMainAlgorithm(self.reset_level)
