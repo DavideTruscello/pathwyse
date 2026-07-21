@@ -88,3 +88,13 @@ void Graph::setArc(int i, int j) {
     forward_neighbors[i].push_back(j);
     backward_neighbors[j].push_back(i);
 }
+
+void Graph::clearArcs() {
+    arcs_map.clear();
+    for (int i = 0; i < n_nodes; i++) {
+        arcs[i].clear();
+        forward_neighbors[i].clear();
+        backward_neighbors[i].clear();
+    }
+
+}

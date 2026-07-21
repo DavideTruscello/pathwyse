@@ -58,6 +58,7 @@ public:
     //Neighbors
     bool areNeighbors(int i, int j, bool direction) {return network.areNeighbors(i, j, direction);}
     std::vector<int> & getNeighbors(int node, bool direction) {return network.getNeighbors(node, direction);}
+    void setNeighbors(std::vector<std::vector<int>> neighbors);
 
     //Active nodes
     bool isActiveNode(int i) {return network.isActiveNode(i);}
@@ -115,6 +116,8 @@ public:
     /** Data collection **/
     void initDataCollection();
     void collectData();
+
+    Graph* getNetwork();
 
 protected:
 

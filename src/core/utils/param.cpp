@@ -66,6 +66,12 @@ std::string Parameters::collection_folder = "output/";
 std::string Parameters::collection_tag;
 std::string Parameters::collection_path;
 
+//Graph reduction
+bool Parameters::use_graph_reduction = false;
+double Parameters::graph_reduction_cutoff = 1.;
+double Parameters::graph_reduction_k1 = 0.;
+double Parameters::graph_reduction_k2 = 0.;
+
 void Parameters::readParameters(std::string param_path) {
     std::ifstream f;
     std::string command, value;
@@ -174,6 +180,14 @@ void Parameters::readParameters(std::string param_path) {
             }
             else if(command == "output/write")
                 output_write = stoi(value);
+            else if(command == "algo/default/use_graph_reduction")
+                use_graph_reduction = stoi(value);
+            else if (command == "algo/default/graph_reduction/cutoff")
+                graph_reduction_cutoff = stof(value);
+            else if(command == "algo/default/graph_reduction/k1")
+                graph_reduction_k1 = stof(value);
+            else if(command == "algo/default/graph_reduction/k2")
+                graph_reduction_k2 = stof(value);
         }
         f.close();
     }

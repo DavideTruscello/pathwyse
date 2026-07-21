@@ -47,31 +47,34 @@ def create_pp_instance(duals, original_path, iteration, scaling=100, output_dir=
     os.makedirs(output_dir, exist_ok=True)
 
     mu = duals[0]
+    gamma = duals[1]
 
     with open(original_path) as f:
         lines = f.readlines()
 
-    edges = []
-    in_edge = False
-    e_start = e_end = None
-    for idx, line in enumerate(lines):
-        if line.strip() == "EDGE_COST":
-            in_edge = True; e_start = idx; continue
-        if in_edge:
+    node_cost_lines = ["NODE_COST\n"]
+    for j in range(len(mu)):
+        cost = int(round(-scaling * mu[j]))
+        node_cost_lines.append(f"{j} {cost}\n")
+    node_cost_lines.append("END\n")
+
+    cleaned = []
+    in_nodecost = False
+    for line in lines:
+        if line.strip() == "NODE_COST":
+            in_nodecost = True
+            continue
+        if in_nodecost:
             if line.strip() == "END":
-                e_end = idx; in_edge = False; continue
-            p = line.split()
-            edges.append((int(p[0]), int(p[1]), float(p[2])))
+                in_nodecost = False
+            continue
+        cleaned.append(line)
 
-    new_edges = []
-    for (i, j, t_ij) in edges:
-        p_ij = t_ij - scaling * mu[j]    # VERIFICA: mu[j] o mu[i]
-        new_edges.append(f"{i} {j} {int(round(p_ij))}\n")
+    output = cleaned + node_cost_lines
 
-    out = lines[:e_start+1] + new_edges + lines[e_end:]
     path = os.path.join(output_dir, f"snapshot_iter_{iteration}.txt")
     with open(path, "w") as f:
-        f.writelines(out)
+        f.writelines(output)
     return path
 
 print("Optimizing...\n")

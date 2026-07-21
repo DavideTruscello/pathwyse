@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <map>
+#include <math.h>
 
 struct ResourceData {
 
@@ -19,6 +20,8 @@ struct ResourceData {
         if(node_costs.empty())
             node_costs.resize(n_nodes, 0);
         node_costs[id] = cost;
+        if (max_node_cost_abs < abs(cost))
+            max_node_cost_abs = abs(cost);
     }
 
     void increaseNodeCost(int id, int delta) {
@@ -34,6 +37,12 @@ struct ResourceData {
     int getNodeCost(int id){return node_costs.empty() ? 0: node_costs[id];}
     std::vector<int> & getNodeCost() {return node_costs;}
 
+    int getMaxAbsNodeCost() const {
+        return max_node_cost_abs;
+    }
+
+    int getMaxAbsArcCost() const { return max_arc_cost_abs; }
+
     /** Arc Data **/
     virtual void setArcCost(int i, int j, int cost) = 0;
     virtual void increaseArcCost(int i, int j, int delta) = 0;
@@ -46,6 +55,8 @@ struct ResourceData {
 protected:
     int n_nodes;
     std::vector<int> node_costs;
+    int max_node_cost_abs = std::numeric_limits<int>::min();
+    int max_arc_cost_abs = std::numeric_limits<int>::min();
 };
 
 struct ResourceDataMap: ResourceData {
@@ -66,7 +77,11 @@ struct ResourceDataMap: ResourceData {
             arc_costs[i].insert(std::make_pair(j, cost));
         else
             position->second = cost;
+
+        if (abs(cost) > this->max_arc_cost_abs)
+            this->max_arc_cost_abs = abs(cost);
     }
+
     void increaseArcCost(int i, int j, int delta) override {
         auto position = arc_costs[i].find(j);
         if(position != arc_costs[i].end())

@@ -31,6 +31,12 @@ algo/default/ng/set_size = 8
 algo/default/candidate/type = node
 algo/default/join/type = ordered
 
+algo/default/use_graph_reduction = 1
+algo/default/graph_reduction/cutoff = 0.5
+algo/default/graph_reduction/k1 = 0.2
+algo/default/graph_reduction/k2 = 0.2
+
+
 data_collection/level = -1
 output/write = 0
 

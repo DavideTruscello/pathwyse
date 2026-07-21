@@ -1,12 +1,13 @@
 #Python Wrapper
 from libcpp.vector cimport vector
+from libcpp.string cimport string
 
 cdef class PWSolver:
     cdef Solver* s
 
     #Constructor
-    def __cinit__(self):
-        self.s = new Solver()
+    def __cinit__(self, str filepath = ""):
+        self.s = new Solver(filepath.encode('utf-8'))
 
     def __dealloc__(self):
         del self.s
@@ -71,6 +72,9 @@ cdef class PWSolver:
     def getSolutionTour(self, id):
         cdef vector[int] vtour = self.s.getSolutionTour(id)
         return list(vtour)
+
+    def getGlobalTime(self):
+        return self.s.getGlobalTime()
 
     def clearSolutions(self):
         self.s.clearSolutions()

@@ -98,6 +98,9 @@ public:
     void increaseArcCost(int i, int j, int delta) {data->increaseArcCost(i, j, delta);}
     void multiplyArcCost(int i, int j, float factor) {data->multiplyArcCost(i, j, factor);}
 
+    int getMaxAbsNodeCost() {return data->getMaxAbsNodeCost();}
+    int getMaxAbsArcCost() {return data->getMaxAbsArcCost();}
+
     int getNodeCost(int i) {return data->getNodeCost(i);}
     void setNodeCost(int i, int cost) { data->setNodeCost(i, cost);}
     void setNodeCosts(std::vector<int> costs) { data->setNodeCosts(costs);}

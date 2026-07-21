@@ -11,7 +11,7 @@ class Solver{
 public:
 
     /** Solver management **/
-    Solver();
+    Solver(const std::string& filepath = "");
     ~Solver();
 
     //General solver methods
@@ -73,6 +73,7 @@ public:
     int getSolutionObjective(int id);
     int getSolutionArcCost(int id);
     int getSolutionNodeCost(int id);
+    double getGlobalTime() const;
     std::vector<int> getSolutionTour(int id);
     std::string getSolutionTourAsString(int id);
     std::vector<Path> getAllSolutions(){return solutions;}

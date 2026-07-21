@@ -4,7 +4,7 @@ from libcpp cimport bool
 
 cdef extern from "solver.h":
     cdef cppclass Solver:
-        Solver() except +
+        Solver(string filepath) except +
 
         #Setup
         void readProblem(string file_name)
@@ -32,6 +32,7 @@ cdef extern from "solver.h":
         int getSolutionObjective(int sol_id)
         int getSolutionArcCost(int sol_id)
         int getSolutionNodeCost(int sol_id)
+        double getGlobalTime()
         vector[int] getSolutionTour(int sol_id)
         void clearSolutions()
 

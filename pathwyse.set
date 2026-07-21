@@ -34,3 +34,8 @@ algo/default/join/type = ordered
 data_collection/level = -1
 output/write = 0
 
+algo/default/use_graph_reduction = 0
+algo/default/graph_reduction/cutoff = 0.5
+algo/default/graph_reduction/k1 = 0.2
+algo/default/graph_reduction/k2 = 0.2
+

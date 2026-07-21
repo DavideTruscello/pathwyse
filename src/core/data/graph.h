@@ -36,6 +36,7 @@ public:
 
     /**  Arc management **/
     void setArc(int i, int j);
+    void clearArcs();
 
     //Neighbors management
     bool areNeighbors(int i, int j, bool direction) {

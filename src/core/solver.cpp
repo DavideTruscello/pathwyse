@@ -1,18 +1,21 @@
 #include "solver.h"
 #include <filesystem>
 
+#include "algorithms/graph_reduction/graph_reduction.h"
+
 /** Solver Management **/
 
 /**
  * Solver Constructor. Builds the solver.
  */
-Solver::Solver() {
+
+Solver::Solver(const std::string& filepath) {
     setStatus(SOLVER_START);
     solver_version = "0.1";
     optimization_round = 0;
     problem = nullptr;
     main_algorithm = nullptr;
-    readConfiguration();
+    readConfiguration(filepath);
     setupOutput();
     printWelcome();
 }
@@ -328,6 +331,12 @@ void Solver::solveAlgorithm(int id) {
     else
         return;
 
+    if (Parameters::isGraphReductionEnabled()) {
+        Problem* problem = algorithm->getProblem();
+        auto* graph_reduction = new GraphReduction(problem);
+        graph_reduction->apply();
+    }
+
     algorithm->setExecutionID(optimization_round);
     algorithm->solve();
     std::vector<Path> algorithm_solutions = algorithm->getSolutions();
@@ -454,6 +463,14 @@ int Solver::getSolutionNodeCost(int id) {
 }
 
 /**
+ * Gets solution global time
+ * @return double - Solution time
+ */
+double Solver::getGlobalTime() const {
+    return main_algorithm->getGlobalTime();
+}
+
+/**
  * Gets tour of a solution.
  * 
  * @param id - Position of the solution from which the tour is retrieved.
@@ -518,7 +535,6 @@ void Solver::printStatus() {
         return;
 
     problem->printStatus();
-
     if(Parameters::getVerbosity() >= 1)
         isEnsembleUsed() ? printEnsembleStatus() : main_algorithm->printStatus();
     std::cout<<"--------------------"<<std::endl;

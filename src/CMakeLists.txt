@@ -4,6 +4,13 @@ cmake_minimum_required(VERSION 3.20)
 #Compilation flags
 set(CMAKE_CXX_STANDARD 20)
 
+
+set(CMAKE_BUILD_TYPE Debug)
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    add_compile_options(-O0 -g)
+endif()
+
+
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	set(CMAKE_CXX_FLAGS  "/O2 /w  /DNDEBUG")
 else()
@@ -46,6 +53,9 @@ set(
         core/algorithms/labels/label_advanced.h
         core/algorithms/labels/label_advanced.cpp
 
+        core/algorithms/graph_reduction/graph_reduction.cpp
+        core/algorithms/graph_reduction/graph_reduction.h
+
         core/algorithms/preprocessing/dijkstra.h
         core/algorithms/preprocessing/dijkstra.cpp
         core/algorithms/preprocessing/preprocessing.h
@@ -86,7 +96,9 @@ target_include_directories(pathwyse_core PUBLIC core)
 
 set(SOURCE_FILES_STANDALONE
         standalone/main.cpp
-        )
+        core/algorithms/graph_reduction/graph_reduction.cpp
+        core/algorithms/graph_reduction/graph_reduction.h
+)
 
 add_executable(pathwyse ${SOURCE_FILES_STANDALONE})
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")

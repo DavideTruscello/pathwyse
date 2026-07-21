@@ -77,6 +77,12 @@ struct Parameters {
     static void setTimestamp(std::string t) {timestamp = t;}
     static void setupCollectionPath();
 
+    // Graph reduction
+    static bool isGraphReductionEnabled() { return use_graph_reduction == 1;}
+    static double getGraphReductionCutoff() {return graph_reduction_cutoff;}
+    static double getGraphReductionK1() {return graph_reduction_k1;}
+    static double getGraphReductionK2() {return graph_reduction_k2;}
+
 private:
     static std::string param_path;                              //Global parameter
 
@@ -135,6 +141,14 @@ private:
     static std::string timestamp;                                           //Global parameter
     static int collection_level;                                            //Global parameter
     static std::string collection_folder, collection_tag, collection_path;  //Global parameter
+
+
+    //Graph reduction
+    static bool use_graph_reduction;
+    static double graph_reduction_cutoff;
+    static double graph_reduction_k1;
+    static double graph_reduction_k2;
+
 };
 
 #endif //SPPRCLIB_PARAM_H

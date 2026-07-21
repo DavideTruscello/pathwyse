@@ -157,6 +157,14 @@ void Problem::scaleAllData(float scaling) {
     }
 }
 
+void Problem::setNeighbors(std::vector<std::vector<int>> arcsConnection) {
+    for (int i=0; i < arcsConnection.size(); i++) {
+        for (int j=0; j < arcsConnection[i].size(); j++) {
+            this->network.setArc(i, arcsConnection[i][j]);
+        }
+    }
+}
+
 /** Read from instance file **/
 //Read and initialize data (compact reader)
 void Problem::readSparseProblem(std::string file_name) {
@@ -684,4 +692,8 @@ void Problem::collectData(){
     collector.setHeader();
     collector.saveRecord();
     collector.writeData();
+}
+
+Graph* Problem::getNetwork() {
+    return &(this->network);
 }
