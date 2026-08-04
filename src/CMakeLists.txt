@@ -53,8 +53,10 @@ set(
         core/algorithms/labels/label_advanced.h
         core/algorithms/labels/label_advanced.cpp
 
-        core/algorithms/graph_reduction/graph_reduction.cpp
-        core/algorithms/graph_reduction/graph_reduction.h
+        core/algorithms/graph_reduction/static_arc_reduction.cpp
+        core/algorithms/graph_reduction/static_arc_reduction.h
+        core/algorithms/graph_reduction/dynamic_node_reduction.h
+        core/algorithms/graph_reduction/dynamic_node_reduction.cpp
 
         core/algorithms/preprocessing/dijkstra.h
         core/algorithms/preprocessing/dijkstra.cpp
@@ -78,6 +80,8 @@ set(
         core/utils/data_collector.cpp
         core/utils/param.h
         core/utils/param.cpp
+        core/data/node_stats.cpp
+        core/data/node_stats.h
 
 )
 
@@ -96,8 +100,10 @@ target_include_directories(pathwyse_core PUBLIC core)
 
 set(SOURCE_FILES_STANDALONE
         standalone/main.cpp
-        core/algorithms/graph_reduction/graph_reduction.cpp
-        core/algorithms/graph_reduction/graph_reduction.h
+        core/algorithms/graph_reduction/static_arc_reduction.cpp
+        core/algorithms/graph_reduction/static_arc_reduction.h
+        core/algorithms/graph_reduction/dynamic_node_reduction.cpp
+        core/algorithms/graph_reduction/dynamic_node_reduction.h
 )
 
 add_executable(pathwyse ${SOURCE_FILES_STANDALONE})

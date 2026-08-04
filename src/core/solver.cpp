@@ -1,7 +1,8 @@
 #include "solver.h"
 #include <filesystem>
 
-#include "algorithms/graph_reduction/graph_reduction.h"
+#include "algorithms/graph_reduction/static_arc_reduction.h"
+#include "data/node_stats.h"
 
 /** Solver Management **/
 
@@ -330,10 +331,9 @@ void Solver::solveAlgorithm(int id) {
         algorithm = ensemble_algorithms[id];
     else
         return;
-
     if (Parameters::isGraphReductionEnabled()) {
         Problem* problem = algorithm->getProblem();
-        auto* graph_reduction = new GraphReduction(problem);
+        auto* graph_reduction = new StaticArcReduction(problem);
         graph_reduction->apply();
     }
 

@@ -45,6 +45,8 @@ public:
     void collectData();
     void writeData();
 
+    LMDefault* getLabelManager() {return label_manager;}
+    
 protected:
 
     //Label Manager
@@ -67,6 +69,8 @@ protected:
     int unreachable_max_count, previous_unreachable_max_count;
     bool timeout, ng_compliant;
     int it_ext_fw, it_ext_bw, ins_attempts_fw, ins_attempts_bw;
+
+
 };
 
 #endif //SPPRCLIB_DP_BIDIRECTIONAL_H

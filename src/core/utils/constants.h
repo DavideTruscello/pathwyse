@@ -114,6 +114,10 @@
 #define T_INS_FW 4
 #define T_INS_BW 5
 
+//Graph reduction modes
+#define GR_DYNAMIC 0
+#define GR_STATIC 1
+
 /** Utilities **/
 #define EPS 10E-7
 

@@ -960,6 +960,55 @@ float LMDefault::getVarLabels(bool direction, float mean) {
     return (sum_square/closed_labels.size());
 }
 
+std::vector<double> LMDefault::meanObjectPerNode(bool direction) {
+    unsigned long n = direction ? forward_closed.size() : backward_closed.size();
+    std::vector<double> mean(n, 0.0);
+
+    for (int node = 0; node < n; node++) {
+        const auto& closed = direction ? forward_closed[node] : backward_closed[node];
+        if (closed.empty()) { mean[node] = 0.0; continue; }
+
+        double sum = 0.0;
+        for (const auto& ref : closed) {
+            int idx = ref.second;
+            LabelAdv* lbl = getLabel(direction, idx);
+            sum += lbl->getObjective();
+        }
+        mean[node] = sum / closed.size();
+    }
+    return mean;
+}
+
+std::vector<double> LMDefault::meanResConsumption(int resource_id, bool direction) {
+    unsigned long n = direction ? forward_closed.size() : backward_closed.size();
+    std::vector<double> mean(n, 0.0);
+
+    for (int node = 0; node < n; node++) {
+        const auto& closed = direction ? forward_closed[node] : backward_closed[node];
+        if (closed.empty()) { mean[node] = 0.0; continue; }
+
+        double sum = 0.0;
+        for (const auto& ref : closed) {
+            LabelAdv* lbl = getLabel(direction, ref.second);
+            sum += lbl->getSnapshot(resource_id);
+        }
+        mean[node] = sum / closed.size();
+    }
+    return mean;
+}
+
+std::vector<unsigned int> LMDefault::labelCountPerNode(bool direction) const {
+    unsigned long n = direction ? forward_closed.size() : backward_closed.size();
+    std::vector<unsigned int> counter(n, 0);
+    for (int node = 0; node < n; node++) {
+        const auto& closed = direction ? forward_closed[node] : backward_closed[node];
+        counter[node] = closed.size();
+    }
+
+    return counter;
+}
+
+
 void LMDefault::collectData() {
     if(not Parameters::isCollecting())
         return;

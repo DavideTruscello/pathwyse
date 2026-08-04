@@ -59,6 +59,9 @@ public:
     bool isCriticalExtensionFeasible(LabelAdv *label, int next_node);
     void extendLabel(LabelAdv *current_label, LabelAdv *new_label, int next_node);
     void updateUnreachables(LabelAdv *label);
+    std::vector<double> meanObjectPerNode(bool direction);
+    std::vector<double> meanResConsumption(int resource_id, bool direction);
+    std::vector<unsigned int> labelCountPerNode(bool direction) const;
 
     //Label insertion
     LabelAdv* insert(LabelAdv *new_label);

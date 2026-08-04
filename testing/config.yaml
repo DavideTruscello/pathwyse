@@ -136,3 +136,4 @@ algorithms:
 time_limits: [100]
 instances:
   - ../instances/spprclib/
+  - ../instances/Longi/

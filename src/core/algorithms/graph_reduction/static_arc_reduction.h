@@ -3,17 +3,19 @@
 
 #include <vector>
 
+#include "data/node_stats.h"
 #include "data/problem.h"
 
-class GraphReduction {
+class StaticArcReduction {
 public:
-    GraphReduction(Problem* problem);
+    StaticArcReduction(Problem* problem);
 
     void reduce(double beta, double K, double K2);
 
     void repairIsolatedNodes(int k_min_arcs);
 
     void apply();
+    void setNodeStats(const NodeStats & s) {stats = s;}
 
 private:
     Problem* problem;
@@ -26,6 +28,7 @@ private:
 
     double computeScore(int i, int j, double K, double K2) const;
     void ensureDepotConnectivity();
+    NodeStats stats;
 };
 
 #endif

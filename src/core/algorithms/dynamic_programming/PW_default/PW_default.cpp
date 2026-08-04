@@ -1,6 +1,9 @@
 #include "PW_default.h"
 #include <thread>
 
+#include "algorithms/graph_reduction/dynamic_node_reduction.h"
+#include "data/node_stats.h"
+
 /** Algorithm management **/
 //Constructors and destructors
 
@@ -105,6 +108,9 @@ void PWDefault::solve(){
 
     setStatus(ALGO_OPTIMIZING);
     initAlgorithm();
+    NodeStats stats;
+
+    bool reduction_applied = false;
 
     bool termination = false;
     while(not termination) {
@@ -136,8 +142,21 @@ void PWDefault::solve(){
         managePaths();
         label_manager->collectData();
 
+        bool profiling_iteration = (Parameters::isNodesGraphReductionEnabled() && iterations == 1);
+        if(profiling_iteration)
+            stats.collect(label_manager, problem);
+
         //Check Termination
         termination = checkTermination();
+
+        if(profiling_iteration and not termination and stats.isAvailable()) {
+            collector.startTime("t_node_reduction");
+            DynamicNodeReduction(problem).apply(stats);
+            collector.stopTime("t_node_reduction");
+
+            reduction_applied = true;
+            algo_type = ALGO_HEURISTIC;
+        }
 
         collector.stopGlobalTime();
         collectData();
@@ -196,6 +215,8 @@ void PWDefault::extend(LabelAdv* candidate) {
     for(auto & neigh: neighbors) {
 
         active = not unreachable_active.empty() and unreachable_active[node].get(neigh);
+        if(not problem->isActiveNode(neigh))
+            continue;
 
         if((active and label_manager->isNodeReachable(candidate, neigh)) or
            (not active and label_manager->isExtensionFeasible(candidate, neigh))){

@@ -1,8 +1,8 @@
-#include "graph_reduction.h"
+#include "static_arc_reduction.h"
 #include <limits>
 #include <stdlib.h>
 
-GraphReduction::GraphReduction(Problem* problem) : problem(problem) {
+StaticArcReduction::StaticArcReduction(Problem* problem) : problem(problem) {
     num_nodes = problem->getNumNodes();
 
     score.resize(num_nodes, std::vector(num_nodes, std::numeric_limits<double>::max()));
@@ -18,7 +18,7 @@ GraphReduction::GraphReduction(Problem* problem) : problem(problem) {
     }
 }
 
-double GraphReduction::computeScore(int i, int j, double K, double K2) const {
+double StaticArcReduction::computeScore(int i, int j, double K, double K2) const {
     Resource* obj = problem->getObj();
 
     const double C_ij = obj->getArcCost(i, j);
@@ -39,7 +39,7 @@ double GraphReduction::computeScore(int i, int j, double K, double K2) const {
     return C_ij / max_abs_arc_cost + K * resource_term + K2 * (P_s + P_d) / (max_abs_node_cost*2);
 }
 
-void GraphReduction::reduce(double beta, double K, double K2) {
+void StaticArcReduction::reduce(double beta, double K, double K2) {
     struct ScoredArc { int i, j; double s; };
     std::vector<ScoredArc> arcs;
 
@@ -63,19 +63,16 @@ void GraphReduction::reduce(double beta, double K, double K2) {
     ensureDepotConnectivity();
 }
 
-void GraphReduction::ensureDepotConnectivity() {
+void StaticArcReduction::ensureDepotConnectivity() {
     int s = problem->getOrigin();
     int t = problem->getDestination();
 
-    // Protect all outgoing arcs from the origin: s -> j
     for (auto& j : problem->getNeighbors(s, true)) {
         auto& vec = arcsConnection[s];
         if (std::find(vec.begin(), vec.end(), j) == vec.end())
             vec.push_back(j);
     }
 
-    // Protect all incoming arcs to the destination: i -> t
-    // getNeighbors(t, false) = nodes that can reach t in the original graph
     for (auto& i : problem->getNeighbors(t, false)) {
         auto& vec = arcsConnection[i];
         if (std::find(vec.begin(), vec.end(), t) == vec.end())
@@ -83,8 +80,8 @@ void GraphReduction::ensureDepotConnectivity() {
     }
 }
 
-void GraphReduction::apply() {
-    this->reduce(Parameters::getGraphReductionCutoff(), Parameters::getGraphReductionK1(), Parameters::getGraphReductionK2());
+void StaticArcReduction::apply() {
+    this->reduce(Parameters::getGraphArcsReductionCutoff(), Parameters::getGraphReductionK1(), Parameters::getGraphReductionK2());
     problem->getNetwork()->clearArcs();
     problem->setNeighbors(arcsConnection);
 }

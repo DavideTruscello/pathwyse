@@ -78,10 +78,15 @@ struct Parameters {
     static void setupCollectionPath();
 
     // Graph reduction
-    static bool isGraphReductionEnabled() { return use_graph_reduction == 1;}
-    static double getGraphReductionCutoff() {return graph_reduction_cutoff;}
+    static bool isArcsGraphReductionEnabled() { return use_arcs_graph_reduction == 1;}
+    static bool isNodesGraphReductionEnabled() { return use_arcs_graph_reduction == 1;}
+    static double getGraphNodeReductionCutoff() {return graph_reduction_nodes_cutoff;}
+    static double getGraphArcsReductionCutoff() {return graph_reduction_arcs_cutoff;}
     static double getGraphReductionK1() {return graph_reduction_k1;}
     static double getGraphReductionK2() {return graph_reduction_k2;}
+    static double getGraphReductionK3() {return graph_reduction_k3;}
+    static double getGraphReductionK4() {return graph_reduction_k4;}
+    static double getGraphReductionK5() {return graph_reduction_k5;}
 
 private:
     static std::string param_path;                              //Global parameter
@@ -144,10 +149,16 @@ private:
 
 
     //Graph reduction
-    static bool use_graph_reduction;
-    static double graph_reduction_cutoff;
+    static bool use_arcs_graph_reduction;
+    static bool use_nodes_graph_reduction;
+    static int graph_reduction_mode;
+    static double graph_reduction_nodes_cutoff;
+    static double graph_reduction_arcs_cutoff;
     static double graph_reduction_k1;
     static double graph_reduction_k2;
+    static double graph_reduction_k3;
+    static double graph_reduction_k4;
+    static double graph_reduction_k5;
 
 };
 
