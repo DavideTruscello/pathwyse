@@ -6,8 +6,8 @@ import itertools
 
 from bin.wrapper import PWSolver
 
-SETTINGS_TEMPLATE = "../pathwyse.set"   # il file template che mi hai mostrato
-SETTINGS_OUT = "./.tmp/pathwyse.set"        # il file generato per ogni run
+SETTINGS_TEMPLATE = "../pathwyse.set"
+SETTINGS_OUT = "./.tmp/pathwyse.set"
 
 
 def parse_settings(path):

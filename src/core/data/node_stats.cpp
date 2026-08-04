@@ -23,8 +23,8 @@ void NodeStats::collect(LMDefault* lm, Problem* problem) {
     count.assign(n_nodes, 0.0);
     n_unobserved = 0;
 
-    std::vector<double> obj_fw = lm->meanObjectPerNode(true);
-    std::vector<double> obj_bw = lm->meanObjectPerNode(false);
+    std::vector<double> obj_fw = lm->minObjectPerNode(true);
+    std::vector<double> obj_bw = lm->minObjectPerNode(false);
     std::vector<unsigned int> cnt_fw = lm->labelCountPerNode(true);
     std::vector<unsigned int> cnt_bw = lm->labelCountPerNode(false);
 
@@ -50,8 +50,8 @@ void NodeStats::collect(LMDefault* lm, Problem* problem) {
         if(budget == INFPLUS or budget == 0)
             continue;
 
-        std::vector<double> res_fw = lm->meanResConsumption(l, true);
-        std::vector<double> res_bw = lm->meanResConsumption(l, false);
+        std::vector<double> res_fw = lm->minResConsumption(l, true);
+        std::vector<double> res_bw = lm->minResConsumption(l, false);
         double neutral_res_fw = meanOfObserved(res_fw, cnt_fw);
         double neutral_res_bw = meanOfObserved(res_bw, cnt_bw);
 

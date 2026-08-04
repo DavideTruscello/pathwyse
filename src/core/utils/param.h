@@ -79,7 +79,7 @@ struct Parameters {
 
     // Graph reduction
     static bool isArcsGraphReductionEnabled() { return use_arcs_graph_reduction == 1;}
-    static bool isNodesGraphReductionEnabled() { return use_arcs_graph_reduction == 1;}
+    static bool isNodesGraphReductionEnabled() { return use_nodes_graph_reduction == 1;}
     static double getGraphNodeReductionCutoff() {return graph_reduction_nodes_cutoff;}
     static double getGraphArcsReductionCutoff() {return graph_reduction_arcs_cutoff;}
     static double getGraphReductionK1() {return graph_reduction_k1;}

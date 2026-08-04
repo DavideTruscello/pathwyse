@@ -979,6 +979,47 @@ std::vector<double> LMDefault::meanObjectPerNode(bool direction) {
     return mean;
 }
 
+std::vector<double> LMDefault::minObjectPerNode(bool direction) {
+    unsigned long n = direction ? forward_closed.size() : backward_closed.size();
+    std::vector<double> min(n, 0.0);
+
+    for (int node = 0; node < n; node++) {
+        const auto& closed = direction ? forward_closed[node] : backward_closed[node];
+        if (closed.empty()) { min[node] = 0.0; continue; }
+
+        double min_val = std::numeric_limits<double>::max();
+        for (const auto& ref : closed) {
+            int idx = ref.second;
+            LabelAdv* lbl = getLabel(direction, idx);
+            if (lbl->getObjective() < min_val) {
+                min_val = lbl->getObjective();
+            }
+        }
+        min[node] = min_val;
+    }
+    return min;
+}
+
+std::vector<double> LMDefault::minResConsumption(int resource_id, bool direction) {
+    unsigned long n = direction ? forward_closed.size() : backward_closed.size();
+    std::vector<double> min(n, 0.0);
+
+    for (int node = 0; node < n; node++) {
+        const auto& closed = direction ? forward_closed[node] : backward_closed[node];
+        if (closed.empty()) { min[node] = 0.0; continue; }
+
+        double min_val = std::numeric_limits<double>::max();
+        for (const auto& ref : closed) {
+            LabelAdv* lbl = getLabel(direction, ref.second);
+            if (lbl->getSnapshot(resource_id) < min_val) {
+                min_val = lbl->getSnapshot(resource_id);
+            }
+        }
+        min[node] = min_val;
+    }
+    return min;
+}
+
 std::vector<double> LMDefault::meanResConsumption(int resource_id, bool direction) {
     unsigned long n = direction ? forward_closed.size() : backward_closed.size();
     std::vector<double> mean(n, 0.0);

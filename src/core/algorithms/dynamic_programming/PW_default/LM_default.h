@@ -60,7 +60,9 @@ public:
     void extendLabel(LabelAdv *current_label, LabelAdv *new_label, int next_node);
     void updateUnreachables(LabelAdv *label);
     std::vector<double> meanObjectPerNode(bool direction);
+    std::vector<double> minObjectPerNode(bool direction);
     std::vector<double> meanResConsumption(int resource_id, bool direction);
+    std::vector<double> minResConsumption(int resource_id, bool direction);
     std::vector<unsigned int> labelCountPerNode(bool direction) const;
 
     //Label insertion

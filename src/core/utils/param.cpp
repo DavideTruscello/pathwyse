@@ -189,19 +189,21 @@ void Parameters::readParameters(std::string param_path) {
             else if(command == "algo/default/graph_reduction/arcs/active")
                 use_arcs_graph_reduction = stoi(value);
             else if (command == "algo/default/graph_reduction/arcs/cutoff")
-                graph_reduction_cutoff = stof(value);
+                graph_reduction_arcs_cutoff = stof(value);
             else if(command == "algo/default/graph_reduction/arcs/k1")
                 graph_reduction_k1 = stof(value);
             else if(command == "algo/default/graph_reduction/arcs/k2")
                 graph_reduction_k2 = stof(value);
             else if(command == "algo/default/graph_reduction/nodes/active")
-                use_arcs_graph_reduction = stoi(value);
+                use_nodes_graph_reduction = stoi(value);
             else if (command == "algo/default/graph_reduction/nodes/cutoff")
-                graph_reduction_cutoff = stof(value);
-            else if(command == "algo/default/graph_reduction/nodes/k1")
-                graph_reduction_k1 = stof(value);
-            else if(command == "algo/default/graph_reduction/nodes/k2")
-                graph_reduction_k2 = stof(value);
+                graph_reduction_nodes_cutoff = stof(value);
+            else if(command == "algo/default/graph_reduction/nodes/k3")
+                graph_reduction_k3 = stof(value);
+            else if(command == "algo/default/graph_reduction/nodes/k4")
+                graph_reduction_k4 = stof(value);
+            else if(command == "algo/default/graph_reduction/nodes/k5")
+                graph_reduction_k5 = stof(value);
             else if(command == "algo/default/graph_reduction/mode") {
                 if(value == "static")
                     graph_reduction_mode = GR_STATIC;

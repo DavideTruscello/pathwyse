@@ -1,139 +1,19 @@
 algorithms:
-  # Ottimo
   - name: PWDefault
     params: {
-      "algo/default/use_graph_reduction": 0,
-      "algo/default/graph_reduction/cutoff": 1,
-      "algo/default/graph_reduction/k1": 0.2,
-      "algo/default/graph_reduction/k2": 0.2
+      "algo/default/graph_reduction/arcs/active": 1,
+      "algo/default/graph_reduction/arcs/cutoff": 0.4,
+      "algo/default/graph_reduction/arcs/k1": 0.2,
+      "algo/default/graph_reduction/arcs/k2": 0.2,
+
+      "algo/default/graph_reduction/nodes/active": 1,
+      "algo/default/graph_reduction/nodes/cutoff": 0.9,
+      "algo/default/graph_reduction/nodes/k3": 0.7,
+      "algo/default/graph_reduction/nodes/k4": 0.3,
+      "algo/default/graph_reduction/nodes/k5": 0.1,
+
     }
 
-  # riduco solo cutoff
-  - name: PWDefault
-    params: {
-      "algo/default/use_graph_reduction": 1,
-      "algo/default/graph_reduction/cutoff": 0.8,
-      "algo/default/graph_reduction/k1": 0.2,
-      "algo/default/graph_reduction/k2": 0.2
-    }
-  - name: PWDefault
-    params: {
-      "algo/default/use_graph_reduction": 1,
-      "algo/default/graph_reduction/cutoff": 0.5,
-      "algo/default/graph_reduction/k1": 0.2,
-      "algo/default/graph_reduction/k2": 0.2
-    }
-  - name: PWDefault
-    params: {
-      "algo/default/use_graph_reduction": 1,
-      "algo/default/graph_reduction/cutoff": 0.3,
-      "algo/default/graph_reduction/k1": 0.2,
-      "algo/default/graph_reduction/k2": 0.2
-    }
-  - name: PWDefault
-    params: {
-      "algo/default/use_graph_reduction": 1,
-      "algo/default/graph_reduction/cutoff": 0.2,
-      "algo/default/graph_reduction/k1": 0.2,
-      "algo/default/graph_reduction/k2": 0.2
-    }
-  - name: PWDefault
-    params: {
-      "algo/default/use_graph_reduction": 1,
-      "algo/default/graph_reduction/cutoff": 0.1,
-      "algo/default/graph_reduction/k1": 0.2,
-      "algo/default/graph_reduction/k2": 0.2
-    }
-  # solo costo archi
-  - name: PWDefault
-    params: {
-      "algo/default/use_graph_reduction": 1,
-      "algo/default/graph_reduction/cutoff": 0.5,
-      "algo/default/graph_reduction/k1": 0.0,
-      "algo/default/graph_reduction/k2": 0.0
-    }
-  - name: PWDefault
-    params: {
-      "algo/default/use_graph_reduction": 1,
-      "algo/default/graph_reduction/cutoff": 0.2,
-      "algo/default/graph_reduction/k1": 0.0,
-      "algo/default/graph_reduction/k2": 0.0
-    }
-  # solo risorse
-  - name: PWDefault
-    params: {
-      "algo/default/use_graph_reduction": 1,
-      "algo/default/graph_reduction/cutoff": 0.5,
-      "algo/default/graph_reduction/k1": 0.2,
-      "algo/default/graph_reduction/k2": 0.0
-    }
-  - name: PWDefault
-    params: {
-      "algo/default/use_graph_reduction": 1,
-      "algo/default/graph_reduction/cutoff": 0.2,
-      "algo/default/graph_reduction/k1": 0.2,
-      "algo/default/graph_reduction/k2": 0.0
-    }
-  # solo duali
-  - name: PWDefault
-    params: {
-      "algo/default/use_graph_reduction": 1,
-      "algo/default/graph_reduction/cutoff": 0.5,
-      "algo/default/graph_reduction/k1": 0.0,
-      "algo/default/graph_reduction/k2": 0.2
-    }
-  - name: PWDefault
-    params: {
-      "algo/default/use_graph_reduction": 1,
-      "algo/default/graph_reduction/cutoff": 0.2,
-      "algo/default/graph_reduction/k1": 0.0,
-      "algo/default/graph_reduction/k2": 0.2
-    }
-  # sensibilità k1
-  - name: PWDefault
-    params: {
-      "algo/default/use_graph_reduction": 1,
-      "algo/default/graph_reduction/cutoff": 0.5,
-      "algo/default/graph_reduction/k1": 0.05,
-      "algo/default/graph_reduction/k2": 0.2
-    }
-  - name: PWDefault
-    params: {
-      "algo/default/use_graph_reduction": 1,
-      "algo/default/graph_reduction/cutoff": 0.5,
-      "algo/default/graph_reduction/k1": 0.5,
-      "algo/default/graph_reduction/k2": 0.2
-    }
-  - name: PWDefault
-    params: {
-      "algo/default/use_graph_reduction": 1,
-      "algo/default/graph_reduction/cutoff": 0.5,
-      "algo/default/graph_reduction/k1": 1.0,
-      "algo/default/graph_reduction/k2": 0.2
-    }
-  # sensibilità k2
-  - name: PWDefault
-    params: {
-      "algo/default/use_graph_reduction": 1,
-      "algo/default/graph_reduction/cutoff": 0.5,
-      "algo/default/graph_reduction/k1": 0.2,
-      "algo/default/graph_reduction/k2": 0.05
-    }
-  - name: PWDefault
-    params: {
-      "algo/default/use_graph_reduction": 1,
-      "algo/default/graph_reduction/cutoff": 0.5,
-      "algo/default/graph_reduction/k1": 0.2,
-      "algo/default/graph_reduction/k2": 0.5
-    }
-  - name: PWDefault
-    params: {
-      "algo/default/use_graph_reduction": 1,
-      "algo/default/graph_reduction/cutoff": 0.5,
-      "algo/default/graph_reduction/k1": 0.2,
-      "algo/default/graph_reduction/k2": 1.0
-    }
 time_limits: [100]
 instances:
-  - ../instances/spprclib/
-  - ../instances/Longi/
+  - ../instances/spprclib

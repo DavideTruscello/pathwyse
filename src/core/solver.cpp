@@ -331,7 +331,7 @@ void Solver::solveAlgorithm(int id) {
         algorithm = ensemble_algorithms[id];
     else
         return;
-    if (Parameters::isGraphReductionEnabled()) {
+    if (Parameters::isArcsGraphReductionEnabled()) {
         Problem* problem = algorithm->getProblem();
         auto* graph_reduction = new StaticArcReduction(problem);
         graph_reduction->apply();
