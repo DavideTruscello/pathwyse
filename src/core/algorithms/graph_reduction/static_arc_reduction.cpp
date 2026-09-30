@@ -1,6 +1,7 @@
 #include "static_arc_reduction.h"
 #include <limits>
 #include <stdlib.h>
+#include <algorithm>
 
 StaticArcReduction::StaticArcReduction(Problem* problem) : problem(problem) {
     num_nodes = problem->getNumNodes();

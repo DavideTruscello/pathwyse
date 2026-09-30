@@ -100,10 +100,6 @@ target_include_directories(pathwyse_core PUBLIC core)
 
 set(SOURCE_FILES_STANDALONE
         standalone/main.cpp
-        core/algorithms/graph_reduction/static_arc_reduction.cpp
-        core/algorithms/graph_reduction/static_arc_reduction.h
-        core/algorithms/graph_reduction/dynamic_node_reduction.cpp
-        core/algorithms/graph_reduction/dynamic_node_reduction.h
 )
 
 add_executable(pathwyse ${SOURCE_FILES_STANDALONE})
