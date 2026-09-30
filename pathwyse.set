@@ -35,14 +35,16 @@ data_collection/level = -1
 output/write = 0
 
 algo/default/graph_reduction/arcs/active = 1
-algo/default/graph_reduction/arcs/cutoff = 0.5
+algo/default/graph_reduction/arcs/cutoff = 0.2
 algo/default/graph_reduction/arcs/k1 = 0.2
 algo/default/graph_reduction/arcs/k2 = 0.2
 
 
-algo/default/graph_reduction/nodes/active = 1
+algo/default/graph_reduction/nodes/active = 0
 algo/default/graph_reduction/nodes/cutoff = 0.6
 algo/default/graph_reduction/nodes/k3 = 0.2
 algo/default/graph_reduction/nodes/k4 = 0.2
 algo/default/graph_reduction/nodes/k5 = 0.2
 
+algo/default/graph_reduction/arcs/temperature = 0
+algo/default/graph_reduction/arcs/seed = 0

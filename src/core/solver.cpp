@@ -333,10 +333,20 @@ void Solver::solveAlgorithm(int id) {
         return;
     if (Parameters::isArcsGraphReductionEnabled()) {
         Problem* problem = algorithm->getProblem();
+        auto countArcs = [problem]() {
+            size_t n = 0;
+            for (int i = 0; i < problem->getNumNodes(); i++)
+                n += problem->getNeighbors(i, true).size();
+            return n;
+        };
+        size_t arcs_before = countArcs();
         auto* graph_reduction = new StaticArcReduction(problem);
         graph_reduction->apply();
+        if (Parameters::getVerbosity() >= 1)
+            std::cout << "Static arc reduction: kept " << countArcs() << " of " << arcs_before
+                      << " arcs (cutoff = " << Parameters::getGraphArcsReductionCutoff() << ")" << std::endl;
     }
-
+    
     algorithm->setExecutionID(optimization_round);
     algorithm->solve();
     std::vector<Path> algorithm_solutions = algorithm->getSolutions();

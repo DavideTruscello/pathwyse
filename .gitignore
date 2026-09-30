@@ -1,4 +1,5 @@
 /.venv/
 build/
 bin/
+benchmark_times/
 summary.csv
