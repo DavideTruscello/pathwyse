@@ -68,9 +68,12 @@ std::string Parameters::collection_path;
 
 //Graph reduction
 bool Parameters::use_arcs_graph_reduction = false;
+bool Parameters::is_deterministic = false;
 bool Parameters::use_nodes_graph_reduction = false;
 double Parameters::graph_reduction_nodes_cutoff = 1.;
 double Parameters::graph_reduction_arcs_cutoff = 1.;
+double Parameters::graph_reduction_arcs_temperature = 0.2;
+int Parameters::graph_reduction_arcs_seed = 0;
 double Parameters::graph_reduction_k1 = 0.;
 double Parameters::graph_reduction_k2 = 0.;
 double Parameters::graph_reduction_k3 = 0.;
@@ -187,11 +190,17 @@ void Parameters::readParameters(std::string param_path) {
             else if(command == "output/write")
                 output_write = stoi(value);
             else if(command == "algo/default/graph_reduction/arcs/active")
-                use_arcs_graph_reduction = stoi(value);
+            use_arcs_graph_reduction = stoi(value);
+            else if(command == "algo/default/graph_reduction/arcs/is_deterministic")
+                is_deterministic = stoi(value);
             else if (command == "algo/default/graph_reduction/arcs/cutoff")
                 graph_reduction_arcs_cutoff = stof(value);
             else if(command == "algo/default/graph_reduction/arcs/k1")
                 graph_reduction_k1 = stof(value);
+            else if(command == "algo/default/graph_reduction/arcs/temperature")
+                graph_reduction_arcs_temperature = stof(value);
+            else if(command == "algo/default/graph_reduction/arcs/seed")
+                graph_reduction_arcs_seed = stoi(value);
             else if(command == "algo/default/graph_reduction/arcs/k2")
                 graph_reduction_k2 = stof(value);
             else if(command == "algo/default/graph_reduction/nodes/active")

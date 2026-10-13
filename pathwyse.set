@@ -34,7 +34,10 @@ algo/default/join/type = ordered
 data_collection/level = -1
 output/write = 0
 
+
+
 algo/default/graph_reduction/arcs/active = 1
+algo/default/graph_reduction/arcs/is_deterministic = 0
 algo/default/graph_reduction/arcs/cutoff = 0.2
 algo/default/graph_reduction/arcs/k1 = 0.2
 algo/default/graph_reduction/arcs/k2 = 0.2

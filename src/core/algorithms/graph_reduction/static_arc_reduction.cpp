@@ -2,6 +2,8 @@
 #include <limits>
 #include <stdlib.h>
 #include <algorithm>
+#include <random>
+#include <cstdint>
 
 StaticArcReduction::StaticArcReduction(Problem* problem) : problem(problem) {
     num_nodes = problem->getNumNodes();
@@ -57,9 +59,63 @@ void StaticArcReduction::reduce(double beta, double K, double K2) {
 
     size_t n_keep = static_cast<size_t>(beta * arcs.size());
 
-    for (size_t idx = 0; idx < n_keep and idx < arcs.size(); idx++) {
-        arcsConnection[arcs[idx].i].push_back(arcs[idx].j);
+    if(Parameters::isGraphArcsReductionDeterministic()){
+        std::cout << "[Graph Arcs Reduction] Using deterministic selection." << std::endl;
+        for (size_t idx = 0; idx < n_keep and idx < arcs.size(); idx++) {
+            arcsConnection[arcs[idx].i].push_back(arcs[idx].j);
+        }
     }
+    else{
+        std::cout << "[Graph Arcs Reduction] Using hybrid selection with a random component." << std::endl;
+        // Selezione ibrida: meta' deterministica (migliori in assoluto),
+        // meta' campionata senza reinserimento con pesi esponenziali (Gumbel-top-k).
+        const size_t n_total  = std::min(n_keep, arcs.size());
+        const size_t n_best   = n_total / 2;           // se dispari, l'arco in piu' va alla parte casuale
+        const size_t n_random = n_total - n_best;
+
+        // 1) Parte deterministica: i primi n_best archi (score piu' basso)
+        for (size_t idx = 0; idx < n_best; idx++)
+            arcsConnection[arcs[idx].i].push_back(arcs[idx].j);
+
+        // 2) Parte casuale: n_random archi estratti dai rimanenti arcs[n_best .. end)
+        if (n_random > 0) {
+            const double tau   = Parameters::getGraphArcsReductionTemperature();
+            const double s_min = arcs[n_best].s;       // arcs e' ordinato: primo e ultimo del pool
+            const double s_max = arcs.back().s;
+            const double range = s_max - s_min;
+
+            const int seed = Parameters::getGraphArcsReductionSeed();
+            std::mt19937_64 rng(seed >= 0 ? static_cast<uint64_t>(seed)
+                                        : static_cast<uint64_t>(std::random_device{}()));
+            std::uniform_real_distribution<double> unif(std::numeric_limits<double>::min(), 1.0);
+
+            // chiave = log(peso) + rumore di Gumbel; le n_random chiavi piu' alte vengono selezionate
+            std::vector<std::pair<double, size_t>> keys;
+            keys.reserve(arcs.size() - n_best);
+            for (size_t idx = n_best; idx < arcs.size(); idx++) {
+                double key;
+                if (tau <= 0.0)
+                    key = -arcs[idx].s;                                  // tau <= 0: nessun caso, scelta greedy
+                else {
+                    const double log_w  = (range > 0.0) ? -(arcs[idx].s - s_min) / (tau * range) : 0.0;
+                    const double gumbel = -std::log(-std::log(unif(rng)));
+                    key = log_w + gumbel;
+                }
+                keys.emplace_back(key, idx);
+            }
+
+            std::nth_element(keys.begin(), keys.begin() + (n_random - 1), keys.end(),
+                            [](const std::pair<double, size_t>& a, const std::pair<double, size_t>& b) {
+                                return a.first > b.first;
+                            });
+
+            for (size_t r = 0; r < n_random; r++) {
+                const ScoredArc& a = arcs[keys[r].second];
+                arcsConnection[a.i].push_back(a.j);
+            }
+        }
+    }
+
 
     ensureDepotConnectivity();
 }
