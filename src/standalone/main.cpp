@@ -25,8 +25,10 @@ int main(int argc, char **argv) {
     pathwyse.printBestSolution();
 
     // ---------------------------------------------------------------------
-    // Benchmark: append the global resolution time of the main algorithm
-    // to benchmark_times/time_<instance>.txt (one line per run).
+    // Benchmark: append one CSV row per run to
+    // benchmark_times/time_<instance>.txt with the format
+    //     time,obj,tour_length
+    // If no solution was found, obj and tour_length are left empty.
     // ---------------------------------------------------------------------
     std::string stem =
         std::filesystem::path(argv[1]).stem().string();
@@ -40,7 +42,14 @@ int main(int argc, char **argv) {
         std::ios::app
     );
 
-    out << elapsed << "\n";
+    out << elapsed << ",";
+    if(pathwyse.getNumberOfSolutions() > 0) {
+        Path best = pathwyse.getBestSolution();
+        out << best.getObjective() << "," << best.getTourLength();
+    }
+    else
+        out << ",";
+    out << "\n";
     // ---------------------------------------------------------------------
 
     return 0;

@@ -17,10 +17,10 @@ foreach ($file in $files) {
 
     $name = $file.BaseName -replace "^time_", ""
 
-    # Legge i tempi e converte ogni riga in numero
+    # Legge i tempi (prima colonna della riga CSV time,obj,tour_length)
     $values = Get-Content $file.FullName |
         Where-Object { $_.Trim() -ne "" } |
-        ForEach-Object { [double]$_ }
+        ForEach-Object { [double](($_ -split ",")[0]) }
 
     if ($values.Count -eq 0) {
         continue

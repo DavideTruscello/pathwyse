@@ -49,5 +49,5 @@ algo/default/graph_reduction/nodes/k3 = 0.2
 algo/default/graph_reduction/nodes/k4 = 0.2
 algo/default/graph_reduction/nodes/k5 = 0.2
 
-algo/default/graph_reduction/arcs/temperature = 0
-algo/default/graph_reduction/arcs/seed = 0
+algo/default/graph_reduction/arcs/temperature = 0.5
+algo/default/graph_reduction/arcs/seed = 100000

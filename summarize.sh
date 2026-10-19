@@ -20,7 +20,7 @@ fi
 tmp="$(mktemp)"
 for f in "$DIR"/time_*.txt; do
     name="$(basename "$f" .txt)"; name="${name#time_}"
-    awk -v name="$name" '
+    awk -F',' -v name="$name" '
         NF { x[++n]=$1+0; s+=$1;
              if(n==1 || $1<mn) mn=$1;
              if(n==1 || $1>mx) mx=$1 }
