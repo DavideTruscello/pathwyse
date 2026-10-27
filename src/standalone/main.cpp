@@ -27,8 +27,10 @@ int main(int argc, char **argv) {
     // ---------------------------------------------------------------------
     // Benchmark: append one CSV row per run to
     // benchmark_times/time_<instance>.txt with the format
-    //     time,obj,tour_length
+    //     time,obj,tour_length,seed
     // If no solution was found, obj and tour_length are left empty.
+    // seed is the value of algo/default/graph_reduction/arcs/seed read from
+    // the settings file (a negative value means a random seed was drawn).
     // ---------------------------------------------------------------------
     std::string stem =
         std::filesystem::path(argv[1]).stem().string();
@@ -49,6 +51,7 @@ int main(int argc, char **argv) {
     }
     else
         out << ",";
+    out << "," << Parameters::getGraphArcsReductionSeed();
     out << "\n";
     // ---------------------------------------------------------------------
 
