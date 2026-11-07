@@ -76,6 +76,7 @@ double Parameters::graph_reduction_nodes_cutoff = 1.;
 double Parameters::graph_reduction_arcs_cutoff = 1.;
 double Parameters::graph_reduction_arcs_temperature = 0.2;
 int Parameters::graph_reduction_arcs_seed = 0;
+int Parameters::getGraphArcsReductionSeed(){return graph_reduction_arcs_seed;}
 double Parameters::graph_reduction_k1 = 0.;
 double Parameters::graph_reduction_k2 = 0.;
 double Parameters::graph_reduction_k3 = 0.;

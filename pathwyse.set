@@ -31,7 +31,7 @@ algo/default/ng/set_size = 8
 algo/default/candidate/type = node
 algo/default/join/type = ordered
 
-algo/default/join/full_network = 0
+algo/default/join/full_network = 1
 algo/requested_solutions = 1
 
 data_collection/level = -1

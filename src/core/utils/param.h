@@ -88,7 +88,7 @@ struct Parameters {
     static double getGraphNodeReductionCutoff() {return graph_reduction_nodes_cutoff;}
     static double getGraphArcsReductionCutoff() {return graph_reduction_arcs_cutoff;}
     static double getGraphArcsReductionTemperature() {return graph_reduction_arcs_temperature;}
-    static int getGraphArcsReductionSeed() {return graph_reduction_arcs_seed;}
+    static int getGraphArcsReductionSeed(); //defined in param.cpp because main needs it
     static double getGraphReductionK1() {return graph_reduction_k1;}
     static double getGraphReductionK2() {return graph_reduction_k2;}
     static double getGraphReductionK3() {return graph_reduction_k3;}
