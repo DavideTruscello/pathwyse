@@ -90,11 +90,27 @@ void Graph::setArc(int i, int j) {
 }
 
 void Graph::clearArcs() {
-    arcs_map.clear();
+    //Removes all arcs, keeping the data structures sized for n_nodes so that setArc can be used again
     for (int i = 0; i < n_nodes; i++) {
-        arcs[i].clear();
+        if(not complete) {
+            if(compress_data)
+                arcs_map[i].clear();
+            else
+                arcs[i].reset();
+        }
         forward_neighbors[i].clear();
         backward_neighbors[i].clear();
     }
+}
 
+void Graph::saveFullNetwork() {
+    //Only the first call saves: if the graph is reduced more than once, the copy is still the original network
+    if(full_network_saved)
+        return;
+
+    full_arcs = arcs;
+    full_arcs_map = arcs_map;
+    full_forward_neighbors = forward_neighbors;
+    full_backward_neighbors = backward_neighbors;
+    full_network_saved = true;
 }

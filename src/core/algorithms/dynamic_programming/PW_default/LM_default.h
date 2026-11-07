@@ -76,6 +76,11 @@ public:
     void naiveJoin();
     void classicJoin();
     void orderedJoin();
+    void ksol_orderedJoin();
+
+    //Arc (i,j) usable by the join: arc of the current network or, if join_full_network is active, of the full network
+    bool isJoinArc(int i, int j) {return join_full_network ? problem->areNeighborsFull(i, j, true) : problem->areNeighbors(i, j, true);}
+    
     bool isJoinFeasible(LabelAdv* forward, LabelAdv* backward);                 //Checks if two labels can be joined
     bool joinFound() {return not joinable_labels.empty();}                      //Checks if a join was found
 
@@ -122,6 +127,8 @@ protected:
 
     int candidate_type;
     int join_type;
+    int requested_solutions;                                                    //K for ksol_orderedJoin
+    bool join_full_network;
 
     int queue_limit;
     int reserve_size;

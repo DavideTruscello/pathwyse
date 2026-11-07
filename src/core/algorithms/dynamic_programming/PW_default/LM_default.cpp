@@ -94,6 +94,8 @@ void LMDefault::readConfiguration() {
     use_visited = compare_unreachables or Parameters::isDefaultUsingVisited();
     candidate_type = Parameters::getDefaultCandidateType();
     join_type = Parameters::getDefaultJoinType();
+    requested_solutions = Parameters::getRequestedSolutions();
+    join_full_network = Parameters::isDefaultJoinFullNetwork();
 
     if(autoconfiguration) {
         //Simple auto-tune of some parameters
@@ -554,6 +556,9 @@ void LMDefault::join(){
         case JOIN_ORDERED:
             orderedJoin();
             break;
+        case JOIN_KORDERED:
+            ksol_orderedJoin();
+            break;
     }
 
     if(candidatesAvailable())
@@ -595,7 +600,7 @@ void LMDefault::naiveJoin(){
     for (int i = 0; i < forward_closed.size(); i++)
         if(i != problem->getDestination())
             for(int j = 0; j < backward_closed.size(); j++)
-                if(problem->areNeighbors(i, j, true) and j != problem->getOrigin()) {
+                if(isJoinArc(i, j) and j != problem->getOrigin()) {
                     for (auto &forward_data: forward_closed[i]){
                         label_forward = &forward_labels[forward_data.second];
                         for (auto &backward_data: backward_closed[j]) {
@@ -623,7 +628,7 @@ void LMDefault::classicJoin() {
     for (int i = 0; i < forward_closed.size(); i++)
         if (forward_best[i] and i != problem->getDestination())
             for (int j = 0; j < backward_closed.size(); j++)
-                if (problem->areNeighbors(i, j, true) and (backward_best[j]) and j != problem->getOrigin()) {
+                if (isJoinArc(i, j) and (backward_best[j]) and j != problem->getOrigin()) {
                     cost = objective->join(forward_best[i]->getObjective(), backward_best[j]->getObjective(), i, j);
                     //cost best f(i) + best b(j) > bound -> go to next node j
                     if (cost <= incumbent) {
@@ -666,7 +671,7 @@ void LMDefault::orderedJoin(){
     for(i = 0; i < forward_closed.size(); i++)
         if(!forward_closed[i].empty() and i != problem->getDestination())
             for(j = 0; j < backward_closed.size(); j++)
-                if(problem->areNeighbors(i, j, true) and !backward_closed[j].empty() and i != j and j != problem->getOrigin()) {
+                if(isJoinArc(i, j) and !backward_closed[j].empty() and i != j and j != problem->getOrigin()) {
                     cost = objective->join(forward_best[i]->getObjective(), backward_best[j]->getObjective(), i, j);
                     if(cost <= incumbent)
                         orderedPairs.insert(std::make_tuple(cost, i, j));
@@ -704,6 +709,87 @@ void LMDefault::orderedJoin(){
         else break;
     }
 }
+
+//Ordered join that keeps the K best joins (K = requested_solutions) instead of the best one only.
+//The threshold is the cost of the K-th best join found so far, instead of the incumbent.
+//Ported from the main branch (ksol_orderedJoin), adapted to keep the threshold across early joins.
+void LMDefault::ksol_orderedJoin(){
+    auto objective = problem->getObj();
+    std::multiset<std::tuple<int, int, int>> orderedPairs;
+    int cost;
+    int i, j;
+
+    //Threshold: cost of the K-th best join (UNKNOWN until K joins are available)
+    int kth_cost = UNKNOWN;
+    if(joinable_labels.size() >= requested_solutions)
+        kth_cost = std::get<0>(*std::prev(joinable_labels.end()));
+
+    //Sort closed
+    for(int p = 0; p < forward_closed.size(); p++){
+        if(not forward_closed[p].empty())
+            std::sort(forward_closed[p].begin(), forward_closed[p].end());
+        if(not backward_closed[p].empty())
+            std::sort(backward_closed[p].begin(), backward_closed[p].end());
+    }
+
+    //Prepare data structure
+    for(i = 0; i < forward_closed.size(); i++)
+        if(not forward_closed[i].empty() and i != problem->getDestination())
+            for(j = 0; j < backward_closed.size(); j++)
+                if(not backward_closed[j].empty() and i != j and j != problem->getOrigin() and isJoinArc(i, j)) {
+                    cost = objective->join(forward_best[i]->getObjective(), backward_best[j]->getObjective(), i, j);
+                    if(cost <= kth_cost)
+                        orderedPairs.insert(std::make_tuple(cost, i, j));
+                }
+
+    //attempt join
+    joinComparisons = 0;
+    LabelAdv *label_forward, *label_backward;
+    while(not orderedPairs.empty()){
+        cost = std::get<0>(*orderedPairs.begin());
+        if(cost > kth_cost)
+            break;
+
+        i = std::get<1>(*orderedPairs.begin());
+        j = std::get<2>(*orderedPairs.begin());
+        orderedPairs.erase(orderedPairs.begin());
+
+        for(auto & f: forward_closed[i]) {
+            label_forward = &forward_labels[f.second];
+            //If current label (i) + best label of j is worse than the threshold, skip to next i-j combination
+            if(objective->join(label_forward->getObjective(), backward_best[j]->getObjective(), i, j) > kth_cost)
+                break;
+
+            for(auto & b: backward_closed[j]) {
+                label_backward = &backward_labels[b.second];
+                cost = objective->join(label_forward->getObjective(), label_backward->getObjective(), i, j);
+                //Backward labels are sorted: the next ones are even worse
+                if(cost > kth_cost)
+                    break;
+
+                joinComparisons++;
+                if(isJoinFeasible(label_forward, label_backward)) {
+                    auto entry = std::make_tuple(cost, label_forward, label_backward);
+
+                    //Same pair already found by a previous (early) join
+                    if(joinable_labels.find(entry) != joinable_labels.end())
+                        continue;
+
+                    if(cost < incumbent)
+                        incumbent = cost;
+                    joinable_labels.insert(entry);
+
+                    //Keep only the K best joins and update the threshold
+                    if(joinable_labels.size() > requested_solutions)
+                        joinable_labels.erase(std::prev(joinable_labels.end()));
+                    if(joinable_labels.size() >= requested_solutions)
+                        kth_cost = std::get<0>(*std::prev(joinable_labels.end()));
+                }
+            }
+        }
+    }
+}
+
 
 bool LMDefault::isJoinFeasible(LabelAdv* label_forward, LabelAdv* label_backward) {
     int i = label_forward->getNode();

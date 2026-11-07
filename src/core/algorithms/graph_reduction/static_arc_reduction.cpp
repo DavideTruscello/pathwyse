@@ -139,6 +139,7 @@ void StaticArcReduction::ensureDepotConnectivity() {
 
 void StaticArcReduction::apply() {
     this->reduce(Parameters::getGraphArcsReductionCutoff(), Parameters::getGraphReductionK1(), Parameters::getGraphReductionK2());
+    problem->getNetwork()->saveFullNetwork();
     problem->getNetwork()->clearArcs();
     problem->setNeighbors(arcsConnection);
 }

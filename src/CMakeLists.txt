@@ -67,6 +67,8 @@ set(
         core/algorithms/dynamic_programming/PW_default/PW_default.cpp
         core/algorithms/dynamic_programming/PW_default/LM_default.h
         core/algorithms/dynamic_programming/PW_default/LM_default.cpp
+        core/algorithms/dynamic_programming/PW_default/superoptimal_pool.h
+        core/algorithms/dynamic_programming/PW_default/superoptimal_pool.cpp
 
         core/algorithms/dynamic_programming/PW_acyclic/PW_acyclic.h
         core/algorithms/dynamic_programming/PW_acyclic/PW_acyclic.cpp
@@ -86,6 +88,9 @@ set(
 )
 
 add_library(pathwyse_core SHARED ${SOURCE_FILES_LIB})
+set_target_properties(pathwyse_core PROPERTIES
+    WINDOWS_EXPORT_ALL_SYMBOLS ON
+)
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     set_target_properties(pathwyse_core
         PROPERTIES

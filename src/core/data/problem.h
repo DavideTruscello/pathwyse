@@ -58,6 +58,9 @@ public:
     //Neighbors
     bool areNeighbors(int i, int j, bool direction) {return network.areNeighbors(i, j, direction);}
     std::vector<int> & getNeighbors(int node, bool direction) {return network.getNeighbors(node, direction);}
+    bool hasFullNetwork() {return network.hasFullNetwork();}
+    bool areNeighborsFull(int i, int j, bool direction) {return network.areNeighborsFull(i, j, direction);}
+    std::vector<int> & getNeighborsFull(int node, bool direction) {return network.getNeighborsFull(node, direction);}
     void setNeighbors(std::vector<std::vector<int>> neighbors);
 
     //Active nodes

@@ -55,6 +55,8 @@ int Parameters::default_candidate_type = 1;
 int Parameters::default_join_type = 2;
 bool Parameters::default_earlyjoin = false;
 unsigned long long int Parameters::default_earlyjoin_step = 300;
+int Parameters::requested_solutions = 1;
+bool Parameters::default_join_full_network = false;
 
 int Parameters::default_queue_limit = 10;
 
@@ -172,9 +174,15 @@ void Parameters::readParameters(std::string param_path) {
                     default_join_type = JOIN_CLASSIC;
                 else if(value == "naive")
                     default_join_type = JOIN_NAIVE;
+                else if(value == "kordered")
+                    default_join_type = JOIN_KORDERED;
                 else
                     default_join_type = JOIN_ORDERED;
             }
+            else if(command == "algo/default/join/full_network")
+                default_join_full_network = stoi(value);
+            else if(command == "algo/requested_solutions")
+                requested_solutions = stoi(value);
             else if(command == "algo/default/join/early")
                 default_earlyjoin = stoi(value);
             else if(command == "algo/default/join/early/step")

@@ -62,8 +62,12 @@ struct Parameters {
 
     static int getDefaultCandidateType(){return default_candidate_type;}
     static int getDefaultJoinType(){return default_join_type;}
+    static int requested_solutions;
+    static bool default_join_full_network;
     static bool isDefaultJoinEarly() {return default_earlyjoin;}
     static unsigned long long int getDefaultJoinStep() {return default_earlyjoin_step;}
+    static int getRequestedSolutions() {return requested_solutions;}
+    static bool isDefaultJoinFullNetwork() {return default_join_full_network;}
 
     /**Data Collection**/
     static bool isOutputStored(){return output_write;}

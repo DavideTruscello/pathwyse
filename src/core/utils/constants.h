@@ -101,6 +101,7 @@
 #define JOIN_NAIVE 0
 #define JOIN_CLASSIC 1
 #define JOIN_ORDERED 2
+#define JOIN_KORDERED 3
 
 /** Data collection **/
 

@@ -38,6 +38,29 @@ public:
     void setArc(int i, int j);
     void clearArcs();
 
+    //Full network management: copy of the network before any graph reduction
+    void saveFullNetwork();
+    bool hasFullNetwork() const {return full_network_saved;}
+    bool areNeighborsFull(int i, int j, bool direction) {
+        if(not full_network_saved)
+            return areNeighbors(i, j, direction);
+        if(i == j)
+            return false;
+        if(complete)
+            return true;
+
+        if(not direction)
+            std::swap(i,j);
+
+        return compress_data ? full_arcs_map[i].count(j) : full_arcs[i].get(j);
+    }
+    std::vector<int> & getNeighborsFull(int node, bool direction) {
+        if(not full_network_saved)
+            return getNeighbors(node, direction);
+        return direction ? full_forward_neighbors[node] : full_backward_neighbors[node];
+    }
+
+
     //Neighbors management
     bool areNeighbors(int i, int j, bool direction) {
         if(i == j)
@@ -76,6 +99,12 @@ private:
     std::vector<std::map<int, bool>> arcs_map;
 
     std::vector<std::vector<int>> forward_neighbors, backward_neighbors;
+
+    //Full network (saved before graph reduction)
+    bool full_network_saved = false;
+    std::vector<Bitset> full_arcs;
+    std::vector<std::map<int, bool>> full_arcs_map;
+    std::vector<std::vector<int>> full_forward_neighbors, full_backward_neighbors;
 };
 
 #endif

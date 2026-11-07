@@ -1,5 +1,6 @@
 #include "PW_default.h"
 #include <thread>
+#include <algorithm>
 
 #include "algorithms/graph_reduction/dynamic_node_reduction.h"
 #include "data/node_stats.h"
@@ -51,6 +52,7 @@ void PWDefault::readConfiguration(){
     ng_size = Parameters::getDefaultNGSize();
     earlyjoin = Parameters::isDefaultJoinEarly();
     earlyjoin_step = Parameters::getDefaultJoinStep();
+    requested_solutions = Parameters::getRequestedSolutions();
     use_visited = Parameters::isDefaultUsingVisited();
     algo_type = ALGO_EXACT;
 
@@ -96,6 +98,9 @@ void PWDefault::resetAlgorithm(int reset_level) {
     //Resets LM
     label_manager->resetLM();
 
+    //Resets pool
+    superoptimal_pool.clear();
+
     //Resets data collection and extra parameters
     collector.resetTimesCumulative();
     timeout = false;
@@ -108,6 +113,7 @@ void PWDefault::solve(){
 
     setStatus(ALGO_OPTIMIZING);
     initAlgorithm();
+    superoptimal_pool.init(problem->getNumNodes());
     NodeStats stats;
 
     bool reduction_applied = false;
@@ -140,6 +146,7 @@ void PWDefault::solve(){
 
         //Manage paths
         managePaths();
+        collectSuperoptimalPaths();
         label_manager->collectData();
 
         bool profiling_iteration = (Parameters::isNodesGraphReductionEnabled() && iterations == 1);
@@ -167,6 +174,9 @@ void PWDefault::solve(){
 
     if(algo_status == ALGO_OPTIMIZING)
         setStatus(ALGO_DONE);
+
+    if(requested_solutions > 1 and Parameters::getVerbosity() >= 1)
+        superoptimal_pool.print();
 
     collector.print();
 }
@@ -299,6 +309,27 @@ bool PWDefault::checkTermination() {
     }
 
     return termination;
+}
+
+//Stores the paths of the joins of the current iteration in the pool (only when K > 1 solutions are requested)
+void PWDefault::collectSuperoptimalPaths(){
+    if(requested_solutions <= 1 or not bidirectional or not label_manager->joinFound())
+        return;
+
+    for(auto & [cost, fw, bw]: label_manager->getAllJoin()) {
+        std::vector<int> tour;
+
+        //Forward part: from the join node back to the origin, then reversed
+        for(Label* l = fw; l != nullptr; l = l->getPredecessor())
+            tour.push_back(l->getNode());
+        std::reverse(tour.begin(), tour.end());
+
+        //Backward part: from the join node to the destination
+        for(Label* l = bw; l != nullptr; l = l->getPredecessor())
+            tour.push_back(l->getNode());
+
+        superoptimal_pool.add(tour, cost, iterations);
+    }
 }
 
 void PWDefault::managePaths(){

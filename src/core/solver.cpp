@@ -340,8 +340,8 @@ void Solver::solveAlgorithm(int id) {
             return n;
         };
         size_t arcs_before = countArcs();
-        auto* graph_reduction = new StaticArcReduction(problem);
-        graph_reduction->apply();
+        StaticArcReduction graph_reduction(problem);
+        graph_reduction.apply();
         if (Parameters::getVerbosity() >= 1)
             std::cout << "Static arc reduction: kept " << countArcs() << " of " << arcs_before
                       << " arcs (cutoff = " << Parameters::getGraphArcsReductionCutoff() << ")" << std::endl;

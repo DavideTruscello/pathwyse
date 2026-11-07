@@ -4,6 +4,7 @@
 #include "algorithms/algorithm.h"
 #include "LM_default.h"
 #include "algorithms/labels/label_advanced.h"
+#include "superoptimal_pool.h"
 
 class PWDefault: public Algorithm {
 
@@ -29,6 +30,8 @@ public:
 
     //Path building
     void managePaths();
+    void collectSuperoptimalPaths();      //Stores the paths of the current joins in the pool
+    SuperoptimalPool & getSuperoptimalPool() {return superoptimal_pool;}
 
     /** Relaxation management **/
     void buildNG();            //build NG sets
@@ -60,6 +63,10 @@ protected:
     int ng_size;
     bool earlyjoin;
     unsigned long long int earlyjoin_step;
+    int requested_solutions;    //K: number of joins kept by ksol_orderedJoin
+
+    //Pool of super-optimal (and elementary) paths found in all the DSSR iterations
+    SuperoptimalPool superoptimal_pool;
 
     //Unreachable nodes
     std::vector<Bitset> unreachable_active;
