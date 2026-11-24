@@ -74,6 +74,9 @@ public:
     int getSolutionArcCost(int id);
     int getSolutionNodeCost(int id);
     double getGlobalTime() const;
+    double getTotalTime() const;                    //Main algorithm time + static arc reduction time
+    double getArcReductionTime() const {return arc_reduction_time;}
+    int getIterations() const;                      //Iterations of the main algorithm (DSSR iterations for PWDefault)
     std::vector<int> getSolutionTour(int id);
     std::string getSolutionTourAsString(int id);
     std::vector<Path> getAllSolutions(){return solutions;}
@@ -113,6 +116,9 @@ private:
 
     //Solutions
     std::vector<Path> solutions;
+
+    //Time spent by the static arc reduction before the main algorithm
+    double arc_reduction_time = 0.;
 
     //Data collection
     DataCollector collector;

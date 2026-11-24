@@ -46,6 +46,7 @@ public:
     int getLowerBound(){return lower_bound;}
 
     double getGlobalTime(){return collector.getGlobalTime();}
+    int getIterations(){return iterations;}        //Number of iterations (for PWDefault: DSSR iterations, including the last one)
 
     //Solution
     Path* getBestSolution() {return best_solution_id >= 0 ? &solutions[best_solution_id] : nullptr;}

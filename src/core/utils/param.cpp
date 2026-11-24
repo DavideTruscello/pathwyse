@@ -68,6 +68,9 @@ std::string Parameters::collection_folder = "output/";
 std::string Parameters::collection_tag;
 std::string Parameters::collection_path;
 
+/**Benchmark output**/
+bool Parameters::output_benchmark = false;
+
 //Graph reduction
 bool Parameters::use_arcs_graph_reduction = false;
 bool Parameters::is_deterministic = false;
@@ -76,7 +79,6 @@ double Parameters::graph_reduction_nodes_cutoff = 1.;
 double Parameters::graph_reduction_arcs_cutoff = 1.;
 double Parameters::graph_reduction_arcs_temperature = 0.2;
 int Parameters::graph_reduction_arcs_seed = 0;
-int Parameters::getGraphArcsReductionSeed(){return graph_reduction_arcs_seed;}
 double Parameters::graph_reduction_k1 = 0.;
 double Parameters::graph_reduction_k2 = 0.;
 double Parameters::graph_reduction_k3 = 0.;
@@ -198,6 +200,8 @@ void Parameters::readParameters(std::string param_path) {
             }
             else if(command == "output/write")
                 output_write = stoi(value);
+            else if(command == "output/benchmark")
+                output_benchmark = stoi(value);
             else if(command == "algo/default/graph_reduction/arcs/active")
             use_arcs_graph_reduction = stoi(value);
             else if(command == "algo/default/graph_reduction/arcs/is_deterministic")
@@ -236,6 +240,18 @@ void Parameters::readParameters(std::string param_path) {
     if(not isCollecting())
         output_write = false;
 }
+
+//Getters defined here (not inline in param.h) because they are used by main.cpp:
+//on Windows pathwyse_core is a DLL and its static variables are not exported
+bool Parameters::isBenchmarkEnabled() {return output_benchmark;}
+bool Parameters::isArcsGraphReductionEnabled() {return use_arcs_graph_reduction == 1;}
+bool Parameters::isGraphArcsReductionDeterministic() {return is_deterministic == 1;}
+bool Parameters::isDefaultJoinFullNetwork() {return default_join_full_network;}
+double Parameters::getGraphArcsReductionCutoff() {return graph_reduction_arcs_cutoff;}
+double Parameters::getGraphArcsReductionTemperature() {return graph_reduction_arcs_temperature;}
+int Parameters::getGraphArcsReductionSeed() {return graph_reduction_arcs_seed;}
+double Parameters::getGraphReductionK1() {return graph_reduction_k1;}
+double Parameters::getGraphReductionK2() {return graph_reduction_k2;}
 
 //Output path setup
 void Parameters::setupCollectionPath(){

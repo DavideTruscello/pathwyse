@@ -67,7 +67,7 @@ struct Parameters {
     static bool isDefaultJoinEarly() {return default_earlyjoin;}
     static unsigned long long int getDefaultJoinStep() {return default_earlyjoin_step;}
     static int getRequestedSolutions() {return requested_solutions;}
-    static bool isDefaultJoinFullNetwork() {return default_join_full_network;}
+    static bool isDefaultJoinFullNetwork();         //defined in param.cpp (used by main.cpp)
 
     /**Data Collection**/
     static bool isOutputStored(){return output_write;}
@@ -81,16 +81,21 @@ struct Parameters {
     static void setTimestamp(std::string t) {timestamp = t;}
     static void setupCollectionPath();
 
+    /**Benchmark output (written by the standalone executable)**/
+    //Getters used by main.cpp are defined in param.cpp: on Windows pathwyse_core is a DLL and
+    //static variables are not exported, so inline getters reading them cannot be linked from main.cpp
+    static bool isBenchmarkEnabled();
+
     // Graph reduction
-    static bool isArcsGraphReductionEnabled() { return use_arcs_graph_reduction == 1;}
-    static bool isGraphArcsReductionDeterministic(){ return is_deterministic == 1;}
+    static bool isArcsGraphReductionEnabled();      //defined in param.cpp (used by main.cpp)
+    static bool isGraphArcsReductionDeterministic();//defined in param.cpp (used by main.cpp)
     static bool isNodesGraphReductionEnabled() { return use_nodes_graph_reduction == 1;}
     static double getGraphNodeReductionCutoff() {return graph_reduction_nodes_cutoff;}
-    static double getGraphArcsReductionCutoff() {return graph_reduction_arcs_cutoff;}
-    static double getGraphArcsReductionTemperature() {return graph_reduction_arcs_temperature;}
-    static int getGraphArcsReductionSeed(); //defined in param.cpp because main needs it
-    static double getGraphReductionK1() {return graph_reduction_k1;}
-    static double getGraphReductionK2() {return graph_reduction_k2;}
+    static double getGraphArcsReductionCutoff();    //defined in param.cpp (used by main.cpp)
+    static double getGraphArcsReductionTemperature();//defined in param.cpp (used by main.cpp)
+    static int getGraphArcsReductionSeed();         //defined in param.cpp (used by main.cpp)
+    static double getGraphReductionK1();            //defined in param.cpp (used by main.cpp)
+    static double getGraphReductionK2();            //defined in param.cpp (used by main.cpp)
     static double getGraphReductionK3() {return graph_reduction_k3;}
     static double getGraphReductionK4() {return graph_reduction_k4;}
     static double getGraphReductionK5() {return graph_reduction_k5;}
@@ -153,6 +158,9 @@ private:
     static std::string timestamp;                                           //Global parameter
     static int collection_level;                                            //Global parameter
     static std::string collection_folder, collection_tag, collection_path;  //Global parameter
+
+    /**Benchmark output**/
+    static bool output_benchmark;
 
 
     //Graph reduction

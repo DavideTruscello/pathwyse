@@ -1,5 +1,6 @@
 #include "solver.h"
 #include <filesystem>
+#include <chrono>
 
 #include "algorithms/graph_reduction/static_arc_reduction.h"
 #include "data/node_stats.h"
@@ -331,7 +332,12 @@ void Solver::solveAlgorithm(int id) {
         algorithm = ensemble_algorithms[id];
     else
         return;
+
+    if(id == MAIN_ALGORITHM)
+        arc_reduction_time = 0.;
+
     if (Parameters::isArcsGraphReductionEnabled()) {
+        auto reduction_start = std::chrono::steady_clock::now();
         Problem* problem = algorithm->getProblem();
         auto countArcs = [problem]() {
             size_t n = 0;
@@ -342,6 +348,9 @@ void Solver::solveAlgorithm(int id) {
         size_t arcs_before = countArcs();
         StaticArcReduction graph_reduction(problem);
         graph_reduction.apply();
+        double reduction_time = std::chrono::duration<double>(std::chrono::steady_clock::now() - reduction_start).count();
+        if(id == MAIN_ALGORITHM)
+            arc_reduction_time = reduction_time;
         if (Parameters::getVerbosity() >= 1)
             std::cout << "Static arc reduction: kept " << countArcs() << " of " << arcs_before
                       << " arcs (cutoff = " << Parameters::getGraphArcsReductionCutoff() << ")" << std::endl;
@@ -478,6 +487,22 @@ int Solver::getSolutionNodeCost(int id) {
  */
 double Solver::getGlobalTime() const {
     return main_algorithm->getGlobalTime();
+}
+
+/**
+ * Gets total time: main algorithm time plus the time spent by the static arc reduction
+ * @return double - Total time
+ */
+double Solver::getTotalTime() const {
+    return arc_reduction_time + main_algorithm->getGlobalTime();
+}
+
+/**
+ * Gets the number of iterations of the main algorithm (for PWDefault: DSSR iterations, including the last one)
+ * @return int - Number of iterations
+ */
+int Solver::getIterations() const {
+    return main_algorithm->getIterations();
 }
 
 /**
