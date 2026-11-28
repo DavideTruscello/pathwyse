@@ -1,0 +1,3 @@
+# Gli script per Linux devono avere fine riga LF anche se il repository viene
+# modificato su Windows: con CRLF bash non riesce a eseguirli
+*.sh text eol=lf

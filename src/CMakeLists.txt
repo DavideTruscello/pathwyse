@@ -5,10 +5,6 @@ cmake_minimum_required(VERSION 3.20)
 set(CMAKE_CXX_STANDARD 20)
 
 
-set(CMAKE_BUILD_TYPE Debug)
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    add_compile_options(-O0 -g)
-endif()
 
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")

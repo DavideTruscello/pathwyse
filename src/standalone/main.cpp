@@ -5,6 +5,8 @@
 #include <locale>
 #include <string>
 #include <vector>
+#include <ctime>
+#include <iomanip>
 
 // ---------------------------------------------------------------------
 // Benchmark output
@@ -23,7 +25,7 @@ const std::string BENCHMARK_DIR = "benchmark";
 const std::vector<std::string> BENCHMARK_HEADER = {
     "file", "arcs_active", "is_deterministic", "full_network",
     "cutoff", "k1", "k2", "seed", "temperature",
-    "status", "obj", "total_time", "tour_length", "dssr_iterations"
+    "status", "obj", "total_time", "tour_length", "dssr_iterations", "datetime"
 };
 
 // One CSV field: its text (always with "." as decimal separator) and whether it is a decimal number
@@ -35,6 +37,21 @@ struct Field {
 Field textField(const std::string & s) {return {s, false};}
 Field intField(long long v) {return {std::to_string(v), false};}
 Field emptyField() {return {"", false};}
+
+// Local date and time of the end of the run, as "YYYY-MM-DD HH:MM:SS"
+// (recognized as a date/time by Excel with both Italian and international settings)
+Field datetimeField() {
+    std::time_t now = std::time(nullptr);
+    std::tm local{};
+#ifdef _WIN32
+    localtime_s(&local, &now);
+#else
+    localtime_r(&now, &local);
+#endif
+    std::ostringstream os;
+    os << std::put_time(&local, "%Y-%m-%d %H:%M:%S");
+    return {os.str(), false};
+}
 
 Field decimalField(double v) {
     std::ostringstream os;
@@ -129,6 +146,7 @@ void writeBenchmark(Solver & pathwyse, const std::string & instance_path) {
         row.push_back(emptyField());
     }
     row.push_back(intField(pathwyse.getIterations()));
+    row.push_back(datetimeField());
 
     std::filesystem::create_directories(BENCHMARK_DIR);
     appendRow("result_intl.csv", row, ',', '.');

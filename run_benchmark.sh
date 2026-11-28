@@ -28,6 +28,13 @@
 # Variabili d'ambiente opzionali: BIN      (default ./bin/pathwyse)
 #                                 SETTINGS (default pathwyse.set)
 #
+
+# Lo script richiede bash: se viene lanciato con "sh run_benchmark.sh" (che su Ubuntu/Debian
+# e' dash), si rilancia da solo con bash
+if [ -z "${BASH_VERSION:-}" ]; then
+    exec bash "$0" "$@"
+fi
+
 set -euo pipefail
 
 usage() {
@@ -89,7 +96,9 @@ if [ -n "$SEEDS_FILE" ]; then
     while IFS= read -r line || [ -n "$line" ]; do
         n=$((n + 1))
         value="${line%%#*}"
-        value="$(echo "$value" | tr -d '\r' | xargs)"
+        value="${value//$'\r'/}"
+        value="${value#"${value%%[![:space:]]*}"}"     # toglie gli spazi iniziali
+        value="${value%"${value##*[![:space:]]}"}"     # toglie gli spazi finali
         [ -z "$value" ] && continue
         if ! [[ "$value" =~ ^-?[0-9]+$ ]]; then
             echo "Seed non valido alla riga $n di $SEEDS_FILE: '$value'" >&2
@@ -120,6 +129,17 @@ else
 fi
 
 mkdir -p "$OUTDIR"
+
+# Avvisa se i CSV esistenti hanno colonne diverse da quelle attuali (file creati da una versione
+# precedente): le nuove righe verrebbero aggiunte sotto un'intestazione sbagliata
+EXPECTED_HEADER="file,arcs_active,is_deterministic,full_network,cutoff,k1,k2,seed,temperature,status,obj,total_time,tour_length,dssr_iterations,datetime"
+if [ -f "$OUTDIR/result_intl.csv" ]; then
+    current_header="$(head -n 1 "$OUTDIR/result_intl.csv" | tr -d '\r')"
+    if [ "$current_header" != "$EXPECTED_HEADER" ]; then
+        echo "[avviso] $OUTDIR/result_intl.csv e $OUTDIR/result_it.csv hanno colonne diverse da quelle attuali" >&2
+        echo "         (creati da una versione precedente): conviene cancellarli o rinominarli." >&2
+    fi
+fi
 
 # File di configurazione temporanei, rimossi anche in caso di interruzione
 TMP_DIR="$(mktemp -d)"

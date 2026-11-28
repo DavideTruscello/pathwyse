@@ -122,6 +122,17 @@ if (-not (Test-Path $OutDir -PathType Container)) {
     New-Item -ItemType Directory -Path $OutDir | Out-Null
 }
 
+# Avvisa se i CSV esistenti hanno colonne diverse da quelle attuali (file creati da una versione
+# precedente): le nuove righe verrebbero aggiunte sotto un'intestazione sbagliata
+$expectedHeader = "file,arcs_active,is_deterministic,full_network,cutoff,k1,k2,seed,temperature,status,obj,total_time,tour_length,dssr_iterations,datetime"
+$intlFile = Join-Path $OutDir "result_intl.csv"
+if (Test-Path $intlFile -PathType Leaf) {
+    $currentHeader = (Get-Content $intlFile -TotalCount 1)
+    if ($currentHeader -ne $expectedHeader) {
+        Write-Warning "$OutDir\result_intl.csv e $OutDir\result_it.csv hanno colonne diverse da quelle attuali (creati da una versione precedente): conviene cancellarli o rinominarli."
+    }
+}
+
 # Cartella per i file di configurazione temporanei
 $tmpDir = Join-Path ([System.IO.Path]::GetTempPath()) ("pathwyse_bench_" + [guid]::NewGuid().ToString("N"))
 New-Item -ItemType Directory -Path $tmpDir | Out-Null
